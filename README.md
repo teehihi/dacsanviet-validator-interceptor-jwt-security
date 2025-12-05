@@ -329,6 +329,18 @@ http://localhost:8088/admin/videos-ajax
 
 ---
 
+### Giao diện hiển thị Video với AJAX
+
+![Giao diện trang Video](screenshots/imageVideo.png)
+
+*Giao diện được thiết kế gồm phân trang và cả chức năng tìm kiếm video*
+
+![Giao diện thêm video bằng AJAX](screenshots/imageAddVideo.png)
+
+*Dùng AJAX cho phép thực hiện các thao tác CRUD mà không cần phải load trang*
+
+---
+
 ## 🔌 RESTful API
 
 Hệ thống cung cấp RESTful API cho Video CRUD với Swagger 3 documentation.
