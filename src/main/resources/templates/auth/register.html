@@ -188,12 +188,14 @@
 						<label for="username" class="form-label">Username <span class="text-danger">*</span></label>
 						<input type="text" class="form-control" id="username" th:field="*{username}" 
 							placeholder="Nhập username" required>
+						<small th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></small>
 					</div>
 					
 					<div class="col-md-6 mb-3">
 						<label for="password" class="form-label">Password <span class="text-danger">*</span></label>
 						<input type="password" class="form-control" id="password" th:field="*{password}" 
 							placeholder="Tối thiểu 6 ký tự" required minlength="6">
+						<small th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></small>
 					</div>
 				</div>
 
@@ -201,6 +203,7 @@
 					<label for="fullname" class="form-label">Họ và Tên <span class="text-danger">*</span></label>
 					<input type="text" class="form-control" id="fullname" th:field="*{fullname}" 
 						placeholder="Nguyễn Văn A" required>
+					<small th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}" class="text-danger"></small>
 				</div>
 
 				<div class="row">
@@ -208,6 +211,7 @@
 						<label for="email" class="form-label">Email</label>
 						<input type="email" class="form-control" id="email" th:field="*{email}" 
 							placeholder="example@email.com">
+						<small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></small>
 					</div>
 					
 					<div class="col-md-6 mb-3">

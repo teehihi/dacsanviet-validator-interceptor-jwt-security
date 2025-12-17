@@ -1,5 +1,6 @@
 package LapTrinhWeb.SpringBoot.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -22,6 +23,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+	@Autowired
+	CustomLoginSuccessHandler customLoginSuccessHandler;
 
 	/**
 	 * API Security Configuration
@@ -58,12 +62,13 @@ public class SecurityConfig {
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/", "/home", "/login", "/register", "/register/save", "/css/**", "/js/**", "/images/**", "/utility/**", "/uploads/**").permitAll()
 				.requestMatchers("/admin/**").hasRole("ADMIN")
+				.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER")
 				.anyRequest().authenticated()
 			)
 			.formLogin(form -> form
 				.loginPage("/login")
 				.loginProcessingUrl("/login")
-				.defaultSuccessUrl("/admin/dashboard", true)
+				.successHandler(customLoginSuccessHandler)
 				.failureUrl("/login?error=true")
 				.permitAll()
 			)

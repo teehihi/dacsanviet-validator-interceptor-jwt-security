@@ -2,7 +2,10 @@ package LapTrinhWeb.SpringBoot.controller;
 
 import java.util.Optional;
 
+import jakarta.validation.Valid;
+
 import org.springframework.beans.BeanUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -34,8 +37,14 @@ public class AuthController {
 	}
 
 	@PostMapping("/register/save")
-	public String registerSave(@ModelAttribute("user") UserModel userModel, 
+	public String registerSave(@Valid @ModelAttribute("user") UserModel userModel, 
+			BindingResult bindingResult,
 			RedirectAttributes redirectAttributes, Model model) {
+		
+		if (bindingResult.hasErrors()) {
+			return "auth/register";
+		}
+		
 		Optional<User> existingUser = userService.findById(userModel.getUsername());
 		if (existingUser.isPresent()) {
 			model.addAttribute("error", "Username đã tồn tại! Vui lòng chọn username khác.");
