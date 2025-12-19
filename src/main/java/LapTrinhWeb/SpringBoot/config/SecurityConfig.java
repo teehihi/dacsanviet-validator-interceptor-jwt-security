@@ -9,6 +9,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 /**
  * Cấu hình Spring Security với 2 FilterChain riêng biệt:
  * 1. API Security - Không cần authentication, không tạo session (STATELESS)
@@ -27,10 +31,18 @@ public class SecurityConfig {
 	@Autowired
 	CustomLoginSuccessHandler customLoginSuccessHandler;
 
+	@Autowired
+	JwtAuthenticationFilter jwtAuthenticationFilter;
+
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+		return authenticationConfiguration.getAuthenticationManager();
+	}
+
 	/**
 	 * API Security Configuration
 	 * - Áp dụng cho: /api/**, /swagger-ui/**, /v3/api-docs/**
-	 * - Không cần authentication (permitAll)
+	 * - Authentication: JWT
 	 * - STATELESS: Không tạo session, không lưu cookie
 	 * - Disable CSRF: API không cần CSRF protection
 	 * - Order(1): Ưu tiên cao hơn, check trước Web Security
@@ -40,9 +52,13 @@ public class SecurityConfig {
 	public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
 		http
 			.securityMatcher("/api/**", "/swagger-ui/**", "/v3/api-docs/**")
-			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+			.authorizeHttpRequests(auth -> auth
+				.requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+				.anyRequest().authenticated()
+			)
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.csrf(csrf -> csrf.disable());
+			.csrf(csrf -> csrf.disable())
+			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		
 		return http.build();
 	}
